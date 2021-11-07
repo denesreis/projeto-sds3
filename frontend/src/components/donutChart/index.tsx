@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import { SaleSum } from 'types/sale';
 import { BASE_URL } from 'utils/requests';
@@ -10,20 +11,40 @@ type ChartData = {
 }
 
 const DonutChart = () => {
-    //Importante  é let e não const porque vai mudar o valor 
-    let chartData : ChartData = { labels:[] , series:[] }; //Instanciando do conteudo mais simples possível
+    //chartData = nome do estado - setChartData nome da função que altera o valor do dado
+    //ChartData>({labels:[] , series:[]} -> defino o tipo e passa um valor inicial
+    const [chartData,setChartData] = useState<ChartData>({labels:[] , series:[]});
 
-    //Usando a crase digita tudo e as variáveis ficam entre chaves
-    axios.get(`${BASE_URL}/sales/amount-by-seller`)
+    useEffect(()=> {
+        axios.get(`${BASE_URL}/sales/amount-by-seller`)
         //o código é equivalente a (response) => {console.log(response.data)} response é parametro da função then
         //como pe apenas um parametro não precisa do abre e fecha parenteses
         .then(response => {
             const data = response.data as SaleSum[]; //fazendo o cast convertendo a resposta em SaleSum definido em types/sale
-            const myLabels = data.map(x => x.saleName)
-            const mySeries = data.map(x => x.sum)
-            chartData = {labels : myLabels, series : mySeries} //Atribuindo os valores para o chartData
-            console.log(chartData)
+            const myLabels = data.map(x => x.saleName);
+            const mySeries = data.map(x => x.sum);
+            //chartData = {labels : myLabels, series : mySeries} //Atribuindo os valores para o chartData
+            setChartData({labels : myLabels, series : mySeries});
         });
+
+    },[])
+
+   /* //Importante  é let e não const porque vai mudar o valor 
+    let chartData : ChartData = { labels:[] , series:[] }; //Instanciando do conteudo mais simples possível*/
+
+    //Usando a crase digita tudo e as variáveis ficam entre chaves
+    //FORMA ERRADA
+    /*axios.get(`${BASE_URL}/sales/amount-by-seller`)
+        //o código é equivalente a (response) => {console.log(response.data)} response é parametro da função then
+        //como pe apenas um parametro não precisa do abre e fecha parenteses
+        .then(response => {
+            const data = response.data as SaleSum[]; //fazendo o cast convertendo a resposta em SaleSum definido em types/sale
+            const myLabels = data.map(x => x.saleName);
+            const mySeries = data.map(x => x.sum);
+            //chartData = {labels : myLabels, series : mySeries} //Atribuindo os valores para o chartData
+            setChartData({labels : myLabels, series : mySeries});
+            console.log(chartData)
+        });*/
 
 
    /* const mockData = {
