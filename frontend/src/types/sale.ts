@@ -33,3 +33,4 @@ export type SaleSucess =     {
     visited: number;
     deals: number
 }
+
